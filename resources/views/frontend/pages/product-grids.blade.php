@@ -205,7 +205,19 @@
 
 
                         </div>
+                        <br><br>
                         <div class="row">
+                            <style>
+                                .w-5{
+                                    height: 10px;
+                                }
+                                .flex-1{
+                                    margin-bottom:20px;
+                                }
+                                .leading-5{
+                                    margin-bottom:20px;
+                                }
+                            </style>
                             <div class="col-md-12 justify-content-center d-flex">
                                 {{$products->appends($_GET)->links()}}
                             </div>

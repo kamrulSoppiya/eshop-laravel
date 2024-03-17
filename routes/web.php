@@ -3,6 +3,7 @@
     use Illuminate\Support\Facades\Route;
     use Illuminate\Support\Facades\Artisan;
     use App\Http\Controllers\AdminController;
+    use App\Http\Controllers\UsersController;
     use App\Http\Controllers\FrontendController;
     use App\Http\Controllers\Auth\LoginController;
     use App\Http\Controllers\MessageController;
@@ -29,6 +30,9 @@
     |
     */
 
+
+    Auth::routes();
+
     // CACHE CLEAR ROUTE
     Route::get('cache-clear', function () {
         Artisan::call('optimize:clear');
@@ -41,7 +45,7 @@
     Route::get('storage-link',[AdminController::class,'storageLink'])->name('storage.link');
 
 
-    Auth::routes(['register' => false]);
+    // Auth::routes(['register' => false]);
 
     Route::get('user/login', [FrontendController::class, 'login'])->name('login.form');
     Route::post('user/login', [FrontendController::class, 'loginSubmit'])->name('login.submit');
@@ -170,7 +174,7 @@
         Route::post('change-password', [AdminController::class, 'changPasswordStore'])->name('change.password');
     });
 
-
+    
 // User section start
     Route::group(['prefix' => '/user', 'middleware' => ['user']], function () {
         Route::get('/', [HomeController::class, 'index'])->name('user');
@@ -202,3 +206,33 @@
     Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']], function () {
         Lfm::routes();
     });
+
+
+
+
+
+
+
+
+
+
+
+    
+
+// Route to display the list of users
+Route::get('/users', [UsersController::class, 'index'])->name('users.index');
+
+// Route to show the user creation form
+Route::get('/users/create', [UsersController::class, 'create'])->name('users.create');
+
+// Route to handle the user creation form submission
+Route::post('/users/store', [UsersController::class, 'store'])->name('users.store');
+
+// Route to show the user edit form
+Route::get('/users/{id}/edit', [UsersController::class, 'edit'])->name('users.edit');
+
+// Route to handle the user edit form submission
+Route::put('/users/{id}/update', [UsersController::class, 'update'])->name('users.update');
+
+// Route to handle user deletion
+Route::delete('/users/{id}/destroy', [UsersController::class, 'destroy'])->name('users.destroy');

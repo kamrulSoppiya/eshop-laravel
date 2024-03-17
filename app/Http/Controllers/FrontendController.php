@@ -12,11 +12,14 @@ use App\Models\Brand;
 use App\User;
 use Auth;
 use Session;
-use Newsletter;
+
 use DB;
 use Hash;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+
+use Spatie\Newsletter\Facades\Newsletter;
+
 class FrontendController extends Controller
 {
    
@@ -405,22 +408,37 @@ class FrontendController extends Controller
         return view('auth.passwords.old-reset');
     }
 
-    public function subscribe(Request $request){
-        if(! Newsletter::isSubscribed($request->email)){
-                Newsletter::subscribePending($request->email);
-                if(Newsletter::lastActionSucceeded()){
-                    request()->session()->flash('success','Subscribed! Please check your email');
-                    return redirect()->route('home');
-                }
-                else{
-                    Newsletter::getLastError();
-                    return back()->with('error','Something went wrong! please try again');
-                }
-            }
-            else{
-                request()->session()->flash('error','Already Subscribed');
-                return back();
-            }
-    }
+ 
+
     
+
+
+
+
+
+
+
+
+public function subscribe(Request $request)
+{
+    $request->validate([
+        'email' => 'required|email',
+    ]);
+
+    $email = $request->email;
+
+    if (!Newsletter::isSubscribed($email)) {
+        Newsletter::subscribePending($email);
+
+        if (Newsletter::lastActionSucceeded()) {
+            return redirect()->route('home')->with('success', 'Subscribed! Please check your email.');
+        } else {
+            $error = Newsletter::getLastError();
+            return back()->with('error', 'Something went wrong! Please try again. Error: ' . $error);
+        }
+    } else {
+        return back()->with('error', 'Already Subscribed');
+    }
+}
+
 }

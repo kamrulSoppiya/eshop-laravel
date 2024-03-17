@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'driver' => \Spatie\Newsletter\Drivers\MailcoachDriver::class,
 
     /*
      * The driver to use to interact with MailChimp API.
